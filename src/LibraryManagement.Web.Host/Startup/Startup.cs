@@ -20,6 +20,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
 using System.IO;
+using AutoMapper;
 
 namespace LibraryManagement.Web.Host.Startup
 {
@@ -55,9 +56,17 @@ namespace LibraryManagement.Web.Host.Startup
             AuthConfigurer.Configure(services, _appConfiguration);
 
             services.AddSignalR();
+			//AutoMapper
+			var mapperConfig = new MapperConfiguration(mc =>
+			{
+				mc.AddProfile(new MappingProfile());
+			});
 
-            // Configure CORS for angular2 UI
-            services.AddCors(
+			IMapper mapper = mapperConfig.CreateMapper();
+			services.AddSingleton(mapper);
+
+			// Configure CORS for angular2 UI
+			services.AddCors(
                 options => options.AddPolicy(
                     _defaultCorsPolicyName,
                     builder => builder

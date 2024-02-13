@@ -7,6 +7,8 @@ namespace LibraryManagement.Authorization.Users
 {
     public class User : AbpUser<User>
     {
+        public ICollection<Models.Task> CreatedTasks{  get; set; }
+        public ICollection<Models.Task> AssignedTasks{  get; set; }
         public const string DefaultPassword = "123qwe";
 
         public static string CreateRandomPassword()
