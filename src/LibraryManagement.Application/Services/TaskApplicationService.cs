@@ -71,7 +71,9 @@ namespace LibraryManagement.Services
 
 		public async Task<IEnumerable<TaskDto>> GetAll()
 		{
-			var tasks = await _taskService.GetAll();
+			var tasks = await _taskService.GetAll(); 
+			if (tasks == null) throw new Exception("No Tasks");
+
 			return _mapper.Map<List<Models.Task>, List<TaskDto>>(tasks.ToList());
 
 		}
@@ -82,8 +84,18 @@ namespace LibraryManagement.Services
 			if (type == null) throw new ArgumentNullException(nameof(type));
 
 			var tasks = _taskService.GetByEmployeeTaskType(type); 
+			if (tasks == null) throw new Exception("No Tasks for this type");
+
 			return _mapper.Map<List<Models.Task>, List<TaskDto>>(tasks.ToList());
 		}
+		[AbpAuthorize(PermissionNames.Manager)]
+		public IEnumerable<TaskDto> GetTaskByDeadlineDate(DateTime date)
+		{
+			var tasks = _taskService.GetTaskByDeadlineDate(date);
+			if (tasks == null) throw new Exception("No Tasks for this day");
+			return _mapper.Map<List<Models.Task>, List<TaskDto>>(tasks.ToList());
+		}
+
 		[AbpAuthorize(PermissionNames.Manager)]
 
 		public void Update(TaskDto model)

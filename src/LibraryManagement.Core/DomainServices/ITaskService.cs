@@ -18,6 +18,8 @@ namespace LibraryManagement.DomainServices
 		public void Delete(int id );
 		public Task<IEnumerable<Models.Task>> GetAll();
 		public IEnumerable<Models.Task> GetByEmployeeTaskType(TaskType name);
+		public IEnumerable<Models.Task> GetTaskByDeadlineDate(DateTime date);
+
 		public Task<Models.Task> AssignTask(int userId, int taskId);
 		public Task<Models.Task> EditTaskStatus(int userId, int taskId , Status status);
 

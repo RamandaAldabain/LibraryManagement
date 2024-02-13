@@ -145,6 +145,11 @@ namespace LibraryManagement.DomainServices
 			return task;
 
 		}
+
+		public IEnumerable<Models.Task> GetTaskByDeadlineDate(DateTime date)
+		{
+			return _taskRepository.GetAll().Where(i=>i.Deadline.Date == date.Date);
+		}
 	}
 
 }
