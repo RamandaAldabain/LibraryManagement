@@ -31,11 +31,9 @@ namespace LibraryManagement.EntityFrameworkCore
 				.HasForeignKey(t => t.AssigneeUserId)
 				.IsRequired()
 				.OnDelete(DeleteBehavior.Restrict);
-
 		}
 
 
 		public DbSet<Task> Tasks { get; set; }
-		//public DbSet<UserProfile> Usersdd { get; set; }
 	}
 }

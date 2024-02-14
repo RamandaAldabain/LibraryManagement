@@ -89,9 +89,9 @@ namespace LibraryManagement.Services
 			return _mapper.Map<List<Models.Task>, List<TaskDto>>(tasks.ToList());
 		}
 		[AbpAuthorize(PermissionNames.Manager)]
-		public IEnumerable<TaskDto> GetTaskByDeadlineDate(DateTime date)
+		public IEnumerable<TaskDto> GetTaskByDeadlineDate(DateTime from , DateTime to)
 		{
-			var tasks = _taskService.GetTaskByDeadlineDate(date);
+			var tasks = _taskService.GetTaskByDeadlineDate(from,to);
 			if (tasks == null) throw new Exception("No Tasks for this day");
 			return _mapper.Map<List<Models.Task>, List<TaskDto>>(tasks.ToList());
 		}

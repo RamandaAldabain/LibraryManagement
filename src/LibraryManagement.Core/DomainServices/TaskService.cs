@@ -1,5 +1,6 @@
 ﻿using Abp.Domain.Repositories;
 using Abp.Domain.Services;
+using Abp.EntityFrameworkCore.Repositories;
 using Abp.Runtime.Session;
 using LibraryManagement.Authorization.Roles;
 using LibraryManagement.Authorization.Users;
@@ -15,6 +16,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace LibraryManagement.DomainServices
 {
@@ -123,14 +125,19 @@ namespace LibraryManagement.DomainServices
 			if ((roles.Contains(TaskType.Accountant.ToString()) && task.TaskType == TaskType.Accountant) ||
 			   (roles.Contains(TaskType.Shelver.ToString()) && task.TaskType == TaskType.Shelver))
 			{
+
 				task.AssigneeUserId = userId;
 				task.Status = Models.LookUps.Status.Assigned;
-				await _taskRepository.UpdateAsync(task);
+				 _taskRepository.Update(task);
+				 _taskRepository.DetachFromDbContext(task);
+			 	UnitOfWorkManager.Current.SaveChanges();
 				user.AssignedTasks.Add(task);
 				await _userManager.UpdateAsync(user);
 				return task;
+
 			}
-			throw new Exception("Task cant be assigned to this user");
+			else { throw new Exception("Task cant be assigned to this user"); }
+ 
 		}
 
 		public async Task<Models.Task> EditTaskStatus(int userId, int taskId, Status status)
@@ -146,9 +153,10 @@ namespace LibraryManagement.DomainServices
 
 		}
 
-		public IEnumerable<Models.Task> GetTaskByDeadlineDate(DateTime date)
+		public IEnumerable<Models.Task> GetTaskByDeadlineDate(DateTime from , DateTime to)
 		{
-			return _taskRepository.GetAll().Where(i=>i.Deadline.Date == date.Date);
+			return _taskRepository.GetAll().Where(task => task.Deadline.Date >= from.Date && task.Deadline.Date <= to.Date);
+
 		}
 	}
 
