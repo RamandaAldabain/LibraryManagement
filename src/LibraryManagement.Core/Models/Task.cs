@@ -19,9 +19,7 @@ namespace LibraryManagement.Models
 		public string Description { get; set; }
 		public DateTime Deadline { get; set; }
 		public Status Status { get; set; }
-		[ForeignKey("CreatorUserId")]
 		public long CreatorUserId { get; set; }
-		[ForeignKey("AssigneeUserId")]
 
 		public long AssigneeUserId { get; set; }
 		public TaskType TaskType { get; set; }

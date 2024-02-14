@@ -59,44 +59,55 @@ namespace LibraryManagement.DomainServices
 					var manageRole = await _roleManager.GetRoleByNameAsync("Manager");
 					if (manageRole != null)
 					{
-						var managerTasks = await _taskRepository.GetAll().Where(i => i.TaskType.ToString() == manageRole.Name).ToListAsync();
+						var managerTasks = _taskRepository.GetAll();
 						return managerTasks;
 					}
 				}
-				else if (roles.Contains("Employee"))
+
+				var employeeTasks = new List<Models.Task>();
+				if (roles.Contains("Shelver"))
 				{
-					var employeeRole = await _roleManager.GetRoleByNameAsync("Employee");
-					if (employeeRole != null)
+					var shelverRole = await _roleManager.GetRoleByNameAsync("Shelver");
+					if (shelverRole != null)
 					{
-						var employeeTasks = new List<Models.Task>();
-						if (roles.Contains("Shelver"))
+						var shelverTasks =  _taskRepository.GetAll().Where(i => i.TaskType==TaskType.Shelver).ToList();
+						if (shelverTasks != null && shelverTasks.Any())
 						{
-							var shelverRole = await _roleManager.GetRoleByNameAsync("Shelver");
-							if (shelverRole != null)
-							{
-								var shelverTasks = await _taskRepository.GetAll().Where(i => i.TaskType.ToString() == shelverRole.Name).ToListAsync();
-								employeeTasks.AddRange(shelverTasks);
-							}
+							employeeTasks.AddRange(shelverTasks);
 						}
-						if (roles.Contains("Accountant"))
+						else
 						{
-							var accountantRole = await _roleManager.GetRoleByNameAsync("Accountant");
-							if (accountantRole != null)
-							{
-								var accountantTasks = await _taskRepository.GetAll().Where(i => i.TaskType.ToString() == accountantRole.Name).ToListAsync();
-								employeeTasks.AddRange(accountantTasks);
-							}
+						
+							throw new Exception("No tasks found for the shelver role.");
 						}
-						return employeeTasks;
 					}
 				}
+				if (roles.Contains("Accountant"))
+				{
+					var accountantRole = await _roleManager.GetRoleByNameAsync("Accountant");
+					if (accountantRole != null)
+					{
+						var accountantTasks = await _taskRepository.GetAll().Where(i => i.TaskType == TaskType.Accountant).ToListAsync();
+						if (accountantTasks != null && accountantTasks.Any())
+						{
+							employeeTasks.AddRange(accountantTasks);
+						}
+						else
+						{
+
+							throw new Exception("No tasks found for the accountant role.");
+						}
+					}
+				}
+				return employeeTasks;
 			}
+
 			return null;
 		}
 
-		public IEnumerable<Models.Task> GetByRole(string name)
+		public IEnumerable<Models.Task> GetByEmployeeTaskType(TaskType name)
 		{
-			return _taskRepository.GetAll().Where(x => x.TaskType.ToString() == name);
+			return _taskRepository.GetAll().Where(x => x.TaskType == name);
 		}
 
 		public async void Update(Models.Task task)
@@ -107,15 +118,17 @@ namespace LibraryManagement.DomainServices
 		public async Task<Models.Task> AssignTask(int userId, int taskId)
 		{
 			var user = await _userManager.GetUserByIdAsync(userId);
-			var task =await _taskRepository.GetAsync(taskId);
+			var task = await _taskRepository.GetAsync(taskId);
 			var roles = await _userManager.GetRolesAsync(user);
 			if ((roles.Contains(TaskType.Accountant.ToString()) && task.TaskType == TaskType.Accountant) ||
-		       (roles.Contains(TaskType.Shelver.ToString()) && task.TaskType == TaskType.Shelver))
+			   (roles.Contains(TaskType.Shelver.ToString()) && task.TaskType == TaskType.Shelver))
 			{
 				task.AssigneeUserId = userId;
 				task.Status = Models.LookUps.Status.Assigned;
+				await _taskRepository.UpdateAsync(task);
 				user.AssignedTasks.Add(task);
-				return  task;
+				await _userManager.UpdateAsync(user);
+				return task;
 			}
 			throw new Exception("Task cant be assigned to this user");
 		}
@@ -128,8 +141,14 @@ namespace LibraryManagement.DomainServices
 			if (!user.AssignedTasks.Any(t => t.Id == taskId))
 				throw new Exception("Not allowed,Your not assigned to this task");
 			task.Status = status;
+			await _taskRepository.UpdateAsync(task);
 			return task;
-						
+
+		}
+
+		public IEnumerable<Models.Task> GetTaskByDeadlineDate(DateTime date)
+		{
+			return _taskRepository.GetAll().Where(i=>i.Deadline.Date == date.Date);
 		}
 	}
 

@@ -7,9 +7,11 @@ namespace LibraryManagement.Authorization.Users
 {
     public class User : AbpUser<User>
     {
-        public ICollection<Models.Task> CreatedTasks{  get; set; }
-        public ICollection<Models.Task> AssignedTasks{  get; set; }
-        public const string DefaultPassword = "123qwe";
+        public ICollection<Models.Task> CreatedTasks{  get; set; } = new List<Models.Task>();
+
+		public ICollection<Models.Task> AssignedTasks{  get; set; } = new List<Models.Task>();
+
+		public const string DefaultPassword = "123qwe";
 
         public static string CreateRandomPassword()
         {
@@ -25,7 +27,10 @@ namespace LibraryManagement.Authorization.Users
                 Name = AdminUserName,
                 Surname = AdminUserName,
                 EmailAddress = emailAddress,
-                Roles = new List<UserRole>()
+                Roles = new List<UserRole>(),
+                AssignedTasks = new List<Models.Task>(),
+                CreatedTasks = new List<Models.Task>()
+             
             };
 
             user.SetNormalizedNames();

@@ -3,6 +3,7 @@ using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using Abp.Runtime.Validation;
 using LibraryManagement.Authorization.Roles;
+using LibraryManagement.Models.enums;
 using LibraryManagement.Models.LookUps;
 using System;
 using System.Collections.Generic;
@@ -28,6 +29,11 @@ namespace LibraryManagement.Dto
 		[Required]
 
 		public Status Status { get; set; }
+		[Required]
+		public long CreatorUserId { get; set; }
+
+		public long AssigneeUserId { get; set; }
+		public TaskType TaskType { get; set; }
 
 
 		public void AddValidationErrors(CustomValidationContext context)
