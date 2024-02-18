@@ -18,7 +18,7 @@ namespace LibraryManagement.Services
 		public void Delete(int id);
 		public Task<IEnumerable<TaskDto>> GetAll();
 		public IEnumerable<TaskDto> GetByEmployeeTaskType(TaskType type);
-		public IEnumerable<TaskDto> GetTaskByDeadlineDate(DateTime date);
+		public IEnumerable<TaskDto> GetTaskByDeadlineDate(DateTime from , DateTime to);
 		public Task<Models.Task> AssignTask(int userId, int taskId);
 		public Task<Models.Task> EditTaskStatus(TaskStatusDto model);
 	}

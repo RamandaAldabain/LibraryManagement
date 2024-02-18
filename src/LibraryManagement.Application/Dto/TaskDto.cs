@@ -45,7 +45,7 @@ namespace LibraryManagement.Dto
 					var taskRepository = scope.Resolve<IRepository<Models.Task, int>>();
 
 					var nameExists = taskRepository.GetAll()
-						.Where(s => s.Name == Name)
+						.Where(s => s.Name == Name && s.Id != Id)
 						.Any();
 
 					if (nameExists)
