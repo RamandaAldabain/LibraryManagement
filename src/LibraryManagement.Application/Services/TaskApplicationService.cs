@@ -4,15 +4,11 @@ using AutoMapper;
 using LibraryManagement.Authorization;
 using LibraryManagement.DomainServices;
 using LibraryManagement.Dto;
-using LibraryManagement.Models;
-using LibraryManagement.Models.enums;
 using LibraryManagement.Models.LookUps;
 using LibraryManagement.Users.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.NetworkInformation;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace LibraryManagement.Services
@@ -30,7 +26,7 @@ namespace LibraryManagement.Services
 			_taskService = taskService;
 		}
 		[AbpAuthorize(PermissionNames.Manager)]
-		public async Task<Models.Task> AssignTask(int userId, int taskId)
+		public async Task<Entities.Task> AssignTask(int userId, int taskId)
 		{
 			if (userId == 0)
 				throw new ArgumentNullException(nameof(userId));
@@ -46,9 +42,9 @@ namespace LibraryManagement.Services
 			{
 				throw new AbpAuthorizationException("You are not authorized to create user!");
 			}
-			var task = _mapper.Map<TaskDto, Models.Task>(model);
+			var task = _mapper.Map<TaskDto, Entities.Task>(model);
 			var newTask = await _taskService.Create(task);
-			return  _mapper.Map<Models.Task, TaskDto>(newTask);
+			return  _mapper.Map<Entities.Task, TaskDto>(newTask);
 
 		}
 		[AbpAuthorize(PermissionNames.Manager)]
@@ -58,7 +54,7 @@ namespace LibraryManagement.Services
 		}
 		[AbpAuthorize(PermissionNames.Employee)]
 
-		public async Task<Models.Task> EditTaskStatus(TaskStatusDto model)
+		public async Task<Entities.Task> EditTaskStatus(TaskStatusDto model)
 		{
 			if(model.UserId == 0) 
 				throw new ArgumentNullException(nameof(model.UserId));
@@ -74,7 +70,7 @@ namespace LibraryManagement.Services
 			var tasks = await _taskService.GetAll(); 
 			if (tasks == null) throw new Exception("No Tasks");
 
-			return _mapper.Map<List<Models.Task>, List<TaskDto>>(tasks.ToList());
+			return _mapper.Map<List<Entities.Task>, List<TaskDto>>(tasks.ToList());
 
 		}
 		[AbpAuthorize(PermissionNames.Manager)]
@@ -86,21 +82,22 @@ namespace LibraryManagement.Services
 			var tasks = _taskService.GetByEmployeeTaskType(type); 
 			if (tasks == null) throw new Exception("No Tasks for this type");
 
-			return _mapper.Map<List<Models.Task>, List<TaskDto>>(tasks.ToList());
+			return _mapper.Map<List<Entities.Task>, List<TaskDto>>(tasks.ToList());
 		}
+
 		[AbpAuthorize(PermissionNames.Manager)]
 		public IEnumerable<TaskDto> GetTaskByDeadlineDate(DateTime from , DateTime to)
 		{
 			var tasks = _taskService.GetTaskByDeadlineDate(from,to);
 			if (tasks == null) throw new Exception("No Tasks for this day");
-			return _mapper.Map<List<Models.Task>, List<TaskDto>>(tasks.ToList());
+			return _mapper.Map<List<Entities.Task>, List<TaskDto>>(tasks.ToList());
 		}
 
 		[AbpAuthorize(PermissionNames.Manager)]
 
 		public void Update(TaskDto model)
 		{
-			var task = _mapper.Map<TaskDto, Models.Task>(model);
+			var task = _mapper.Map<TaskDto, Entities.Task>(model);
 
 			_taskService.Update(task);
 		}

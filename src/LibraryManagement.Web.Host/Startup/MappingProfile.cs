@@ -11,7 +11,7 @@ namespace LibraryManagement.Web.Host.Startup
 	{
 		public MappingProfile()
 		{
-			CreateMap<Models.Task, TaskDto>().ReverseMap();
+			CreateMap<Entities.Task, TaskDto>().ReverseMap();
 			CreateMap<Role, CreateRoleDto>().ReverseMap();
 			CreateMap<Role, RoleDto>().ReverseMap();
 			CreateMap<Role, RoleEditDto>().ReverseMap();

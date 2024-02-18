@@ -15,6 +15,8 @@
             new DefaultLanguagesCreator(_context).Create();
             new HostRoleAndUserCreator(_context).Create();
             new DefaultSettingsCreator(_context).Create();
+            new DefaultStatusCreator(_context).Create();
+            new DefaultTaskTypeCreator(_context).Create();
 
             _context.SaveChanges();
         }

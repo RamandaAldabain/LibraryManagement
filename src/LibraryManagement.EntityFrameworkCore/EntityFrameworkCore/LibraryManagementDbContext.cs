@@ -4,6 +4,8 @@ using LibraryManagement.Authorization.Roles;
 using LibraryManagement.Authorization.Users;
 using LibraryManagement.MultiTenancy;
 using LibraryManagement.Models;
+using LibraryManagement.Models.LookUps;
+using LibraryManagement.Entities;
 
 namespace LibraryManagement.EntityFrameworkCore
 {
@@ -15,25 +17,9 @@ namespace LibraryManagement.EntityFrameworkCore
 			: base(options)
 		{
 		}
-		protected override void OnModelCreating(ModelBuilder modelBuilder)
-		{
-			base.OnModelCreating(modelBuilder);
-			modelBuilder.Entity<Task>()
-			 .HasOne<User>()
-			 .WithMany()
-			 .HasForeignKey(t => t.CreatorUserId)
-			 .IsRequired()
-			 .OnDelete(DeleteBehavior.Restrict);
-
-			modelBuilder.Entity<Task>()
-				.HasOne<User>()
-				.WithMany()
-				.HasForeignKey(t => t.AssigneeUserId)
-				.IsRequired()
-				.OnDelete(DeleteBehavior.Restrict);
-		}
-
 
 		public DbSet<Task> Tasks { get; set; }
+		public DbSet<Status> Statuses { get; set; }
+		public DbSet<TaskType> TaskTypes { get; set; }
 	}
 }

@@ -1,12 +1,9 @@
 ﻿using Abp.Application.Services;
 using LibraryManagement.Dto;
-using LibraryManagement.Models.enums;
 using LibraryManagement.Models.LookUps;
 using LibraryManagement.Users.Dto;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace LibraryManagement.Services
@@ -19,7 +16,7 @@ namespace LibraryManagement.Services
 		public Task<IEnumerable<TaskDto>> GetAll();
 		public IEnumerable<TaskDto> GetByEmployeeTaskType(TaskType type);
 		public IEnumerable<TaskDto> GetTaskByDeadlineDate(DateTime from , DateTime to);
-		public Task<Models.Task> AssignTask(int userId, int taskId);
-		public Task<Models.Task> EditTaskStatus(TaskStatusDto model);
+		public Task<Entities.Task> AssignTask(int userId, int taskId);
+		public Task<Entities.Task> EditTaskStatus(TaskStatusDto model);
 	}
 }

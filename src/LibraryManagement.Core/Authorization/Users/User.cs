@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using Abp.Authorization.Users;
 using Abp.Extensions;
 
@@ -7,9 +8,10 @@ namespace LibraryManagement.Authorization.Users
 {
     public class User : AbpUser<User>
     {
-        public ICollection<Models.Task> CreatedTasks{  get; set; } = new List<Models.Task>();
-
-		public ICollection<Models.Task> AssignedTasks{  get; set; } = new List<Models.Task>();
+		[InverseProperty("Creator")]
+		public ICollection<Entities.Task> CreatedTasks {  get; set; } = new List<Entities.Task>();
+		[InverseProperty("Assignee")]
+		public ICollection<Entities.Task> AssignedTasks {  get; set; } = new List<Entities.Task>();
 
 		public const string DefaultPassword = "123qwe";
 
@@ -28,8 +30,8 @@ namespace LibraryManagement.Authorization.Users
                 Surname = AdminUserName,
                 EmailAddress = emailAddress,
                 Roles = new List<UserRole>(),
-                AssignedTasks = new List<Models.Task>(),
-                CreatedTasks = new List<Models.Task>()
+				AssignedTasks = new List<Entities.Task>(),
+				CreatedTasks = new List<Entities.Task>()
              
             };
 

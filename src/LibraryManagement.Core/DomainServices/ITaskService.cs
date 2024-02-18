@@ -1,27 +1,22 @@
 ﻿using Abp.Domain.Services;
-using LibraryManagement.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using LibraryManagement.Models;
 using System.Threading.Tasks;
 using LibraryManagement.Models.LookUps;
-using LibraryManagement.Models.enums;
 
 namespace LibraryManagement.DomainServices
 {
 	public interface ITaskService : IDomainService
 	{
-		public Task<Models.Task> Create(Models.Task task);
-		public void Update(Models.Task task);
+		public Task<Entities.Task> Create(Entities.Task task);
+		public void Update(Entities.Task task);
 		public void Delete(int id );
-		public Task<IEnumerable<Models.Task>> GetAll();
-		public IEnumerable<Models.Task> GetByEmployeeTaskType(TaskType name);
-		public IEnumerable<Models.Task> GetTaskByDeadlineDate(DateTime from,DateTime to);
+		public Task<IEnumerable<Entities.Task>> GetAll();
+		public IEnumerable<Entities.Task> GetByEmployeeTaskType(TaskType name);
+		public IEnumerable<Entities.Task> GetTaskByDeadlineDate(DateTime from,DateTime to);
 
-		public Task<Models.Task> AssignTask(int userId, int taskId);
-		public Task<Models.Task> EditTaskStatus(int userId, int taskId , Status status);
+		public Task<Entities.Task> AssignTask(long userId, long taskId);
+		public Task<Entities.Task> EditTaskStatus(long userId, long taskId , Status status);
 
 	}
 }
