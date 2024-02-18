@@ -64,6 +64,10 @@ namespace LibraryManagement.Web.Host.Startup
 
 			IMapper mapper = mapperConfig.CreateMapper();
 			services.AddSingleton(mapper);
+			services.AddControllers().AddNewtonsoftJson(options =>
+{
+				options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+			});
 
 			// Configure CORS for angular2 UI
 			services.AddCors(

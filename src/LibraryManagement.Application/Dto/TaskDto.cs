@@ -2,22 +2,16 @@
 using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using Abp.Runtime.Validation;
-using LibraryManagement.Authorization.Roles;
-using LibraryManagement.Models.enums;
 using LibraryManagement.Models.LookUps;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LibraryManagement.Dto
 {
 	public class TaskDto : ICustomValidate
 	{
-		public int Id { get; set; }
+		public long Id { get; set; }
 		[Required]
 		public string Name { get; set; }
 		[Required]
@@ -42,7 +36,7 @@ namespace LibraryManagement.Dto
 			{
 				using (var uow = scope.Resolve<IUnitOfWorkManager>().Begin())
 				{
-					var taskRepository = scope.Resolve<IRepository<Models.Task, int>>();
+					var taskRepository = scope.Resolve<IRepository<Entities.Task, long>>();
 
 					var nameExists = taskRepository.GetAll()
 						.Where(s => s.Name == Name && s.Id != Id)

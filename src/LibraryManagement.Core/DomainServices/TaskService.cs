@@ -4,25 +4,19 @@ using Abp.EntityFrameworkCore.Repositories;
 using Abp.Runtime.Session;
 using LibraryManagement.Authorization.Roles;
 using LibraryManagement.Authorization.Users;
-using LibraryManagement.Models;
-using LibraryManagement.Models.enums;
 using LibraryManagement.Models.LookUps;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace LibraryManagement.DomainServices
 {
 	public class TaskService : DomainService, ITaskService
 	{
-		private readonly IRepository<Models.Task> _taskRepository;
+		private readonly IRepository<Entities.Task,long> _taskRepository;
 		private readonly UserManager _userManager;
 		private readonly RoleManager _roleManager;
 		public IAbpSession _AbpSession { get; set; }
@@ -30,7 +24,7 @@ namespace LibraryManagement.DomainServices
 
 
 
-		public TaskService(IRepository<Models.Task> taskRepository, UserManager userManager, RoleManager roleManager, IAbpSession AbpSession)
+		public TaskService(IRepository<Entities.Task,long> taskRepository, UserManager userManager, RoleManager roleManager, IAbpSession AbpSession)
 		{
 			_taskRepository = taskRepository;
 			_userManager = userManager;
@@ -38,7 +32,7 @@ namespace LibraryManagement.DomainServices
 			_roleManager = roleManager;
 
 		}
-		public async Task<Models.Task> Create(Models.Task model)
+		public async Task<Entities.Task> Create(Entities.Task model)
 		{
 			return await _taskRepository.InsertAsync(model);
 
@@ -49,7 +43,7 @@ namespace LibraryManagement.DomainServices
 			_taskRepository.Delete(id);
 		}
 
-		public async Task<IEnumerable<Models.Task>> GetAll()
+		public async Task<IEnumerable<Entities.Task>> GetAll()
 		{
 			var user = await _userManager.GetUserByIdAsync((long)_AbpSession.UserId);
 			if (user != null)
@@ -66,13 +60,13 @@ namespace LibraryManagement.DomainServices
 					}
 				}
 
-				var employeeTasks = new List<Models.Task>();
+				var employeeTasks = new List<Entities.Task>();
 				if (roles.Contains("Shelver"))
 				{
 					var shelverRole = await _roleManager.GetRoleByNameAsync("Shelver");
 					if (shelverRole != null)
 					{
-						var shelverTasks =  _taskRepository.GetAll().Where(i => i.TaskType==TaskType.Shelver).ToList();
+						var shelverTasks =  _taskRepository.GetAll().Where(i => i.TaskType.Name=="Shelver").ToList();
 						if (shelverTasks != null && shelverTasks.Any())
 						{
 							employeeTasks.AddRange(shelverTasks);
@@ -89,7 +83,7 @@ namespace LibraryManagement.DomainServices
 					var accountantRole = await _roleManager.GetRoleByNameAsync("Accountant");
 					if (accountantRole != null)
 					{
-						var accountantTasks = await _taskRepository.GetAll().Where(i => i.TaskType == TaskType.Accountant).ToListAsync();
+						var accountantTasks = await _taskRepository.GetAll().Where(i => i.TaskType.Name =="" ).ToListAsync();
 						if (accountantTasks != null && accountantTasks.Any())
 						{
 							employeeTasks.AddRange(accountantTasks);
@@ -107,12 +101,12 @@ namespace LibraryManagement.DomainServices
 			return null;
 		}
 
-		public IEnumerable<Models.Task> GetByEmployeeTaskType(TaskType name)
+		public IEnumerable<Entities.Task> GetByEmployeeTaskType(TaskType name)
 		{
 			return _taskRepository.GetAll().Where(x => x.TaskType == name);
 		}
 
-		public async void Update(Models.Task task)
+		public async void Update(Entities.Task task)
 		{
 			await _taskRepository.UpdateAsync(task);
 		}
@@ -140,7 +134,7 @@ namespace LibraryManagement.DomainServices
  
 		}
 
-		public async Task<Models.Task> EditTaskStatus(int userId, int taskId, Status status)
+		public async Task<Entities.Task> EditTaskStatus(int userId, int taskId, Status status)
 		{
 			var user = await _userManager.GetUserByIdAsync(userId);
 			var task = await _taskRepository.GetAsync(taskId);
@@ -153,7 +147,7 @@ namespace LibraryManagement.DomainServices
 
 		}
 
-		public IEnumerable<Models.Task> GetTaskByDeadlineDate(DateTime from , DateTime to)
+		public IEnumerable<Entities.Task> GetTaskByDeadlineDate(DateTime from , DateTime to)
 		{
 			return _taskRepository.GetAll().Where(task => task.Deadline.Date >= from.Date && task.Deadline.Date <= to.Date);
 
