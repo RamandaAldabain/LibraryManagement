@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using LibraryManagement.Authorization.Roles;
 using LibraryManagement.Authorization.Users;
-using LibraryManagement.Dto;
 using LibraryManagement.Roles.Dto;
+using LibraryManagement.Tasks.Dto;
 using LibraryManagement.Users.Dto;
 
 namespace LibraryManagement.Web.Host.Startup
