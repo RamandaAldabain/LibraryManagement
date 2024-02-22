@@ -20,7 +20,9 @@ namespace LibraryManagement.Entities
 		public long AssigneeId { get; set; }
 		public User Assignee { get; set; }
 
+		public long StatusId { get; set; }
 		public Status Status { get; set; }
+		public long TaskTypeId { get; set; }
 		public TaskType TaskType { get; set; }
 	}
 }
