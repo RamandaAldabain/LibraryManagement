@@ -14,7 +14,7 @@ namespace LibraryManagement.Tasks.Interfaces
         public void Update(TaskDto model);
         public void Delete(int id);
         public Task<IList<TaskDto>> GetAll();
-        public IList<TaskDto> GetByEmployeeTaskType(TaskType type);
+        public IList<TaskDto> GetByEmployeeTaskType(long TypeId);
         public IList<TaskDto> GetTaskByDeadlineDate(DateTime from, DateTime to);
         public Task<Entities.Task> AssignTask(long userId, long taskId);
         public Task<Entities.Task> EditTaskStatus(TaskStatusDto model);
